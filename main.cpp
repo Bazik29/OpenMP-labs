@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <chrono>
+#include <stdexcept>
 
 #include "Matrix.h"
 #include "functions.h"
