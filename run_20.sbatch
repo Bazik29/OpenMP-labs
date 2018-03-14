@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=hello_openmp
+#SBATCH --job-name=mulMatrix
 #SBATCH --output=output_%j.txt
 #SBATCH --ntasks=1
 #
@@ -8,9 +8,18 @@
 #SBATCH --time=10:00
 #SBATCH --mem-per-cpu=100
 
-if [ -n "$SLURM_CPUS_PER_TASK" ]; then
-  omp_threads=$SLURM_CPUS_PER_TASK
-else
-  omp_threads=1
-fi
+for var in 8 16 20
+do 
+
+omp_threads=$var
 export OMP_NUM_THREADS=$omp_threads
+
+echo "threads:" $omp_threads
+echo "╔═══════════════════════════════════════════════════════╗"
+echo "║ dim   init            mul             runtime         ║"
+echo "╟───────────────────────────────────────────────────────╢"
+./main 2000
+./main 4000
+echo "╚═══════════════════════════════════════════════════════╝"
+
+done
