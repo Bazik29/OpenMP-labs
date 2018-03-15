@@ -1,6 +1,9 @@
 main
+*.csv
+!test.csv
 
 .directory
+.ipynb_checkpoints
 
 # Prerequisites
 *.d

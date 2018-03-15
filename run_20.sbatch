@@ -8,19 +8,21 @@
 #SBATCH --time=10:00
 #SBATCH --mem-per-cpu=100
 
-for var in 20
-do 
 
-omp_threads=$var
+num_for_repeat=3
+
+echo "Threads,Dimension,InitTime,MultTime,RunTime"
+for omp_threads in 2 4
+do
+
 export OMP_NUM_THREADS=$omp_threads
 
-echo "threads:" $omp_threads
-echo "╔═══════════════════════════════════════════════════════╗"
-echo "║ dim   init            mul             runtime         ║"
-echo "╟───────────────────────────────────────────────────────╢"
-./main 1000
-./main 2000
-./main 4000
-echo "╚═══════════════════════════════════════════════════════╝"
+for dim in 10 50 100
+do
+	for ((i=0; i < $num_for_repeat; i++))
+	do
+	./main $dim
+	done
+done
 
 done
