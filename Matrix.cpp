@@ -22,6 +22,17 @@ std::vector<double> randVector(size_t size) {
 	return result;
 }
 
+std::vector<double> eyeMatrix(size_t rows, size_t cols) {
+	size_t size = rows > cols ? rows : cols;
+	std::vector<double> result(rows * cols);
+
+	#pragma omp for schedule(static)
+	for (size_t i = 0; i < size; i++)
+		result[i * cols + i] = 1;
+
+	return result;
+}
+
 Matrix mulSerial(const Matrix& first, const Matrix& second) {
 	Matrix result(first.rows(), second.cols());
 

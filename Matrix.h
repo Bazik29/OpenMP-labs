@@ -5,6 +5,7 @@
 #include <string>
 
 std::vector<double> randVector(size_t size);
+std::vector<double> eyeMatrix(size_t rows, size_t cols);
 
 class Matrix {
 public:
@@ -25,6 +26,7 @@ public:
 	Matrix operator*(const Matrix& matrix);
 
 	static Matrix rand(size_t rows, size_t cols) { return Matrix(rows, cols, randVector(rows * cols)); }
+	static Matrix eye(size_t rows, size_t cols) { return Matrix(rows, cols, eyeMatrix(rows, cols)); }
 
 private:
 	size_t m_rows;
