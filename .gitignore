@@ -1,7 +1,8 @@
 main
 main_?
 *.csv
-!test.csv
+!result_h_1.csv
+!result_h_2.csv
 
 .directory
 .ipynb_checkpoints
