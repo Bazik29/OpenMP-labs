@@ -40,7 +40,9 @@ private:
 };
 
 Matrix mulSerial(const Matrix& first, const Matrix& second);
-Matrix mulParallel(const Matrix& first, const Matrix& second);
+Matrix mulParallel_1(const Matrix& first, const Matrix& second);
+Matrix mulParallel_2(const Matrix& first, const Matrix& second);
+Matrix transpose(const Matrix& matrix);
 std::string toString(const Matrix& matrix);
 
 #endif // __MATRIX_H__

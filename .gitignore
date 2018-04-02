@@ -1,4 +1,5 @@
 main
+main_?
 *.csv
 !test.csv
 

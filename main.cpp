@@ -12,8 +12,8 @@ int main(int argc, char* argv[]) {
 
 	auto startTime = std::chrono::steady_clock::now();
 
-	size_t rows = 5;
-	size_t cols = 5;
+	size_t rows = 100;
+	size_t cols = 100;
 	if (argc > 1) {
 		std::istringstream ss(argv[1]);
 		int dim;
@@ -25,12 +25,12 @@ int main(int argc, char* argv[]) {
 	}
 
 	Matrix A = Matrix::rand(rows, cols);
-	Matrix B = Matrix::rand(rows, cols);
+	Matrix B = Matrix::eye(rows, cols);
 	Matrix C(rows, cols);
 
 	auto initTime = std::chrono::steady_clock::now();
 
-	C = mulParallel(A, B);
+	C = A * B;
 
 	auto mulTime = std::chrono::steady_clock::now();
 

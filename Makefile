@@ -1,7 +1,12 @@
-COMPILER = g++
+# 0 - последовательное умножение матрицы
+# 1 - обычное умножение матрицы openmp
+# 2 - необычное умножение матрицы openmp
+TYPE_MUL = -DMATRTIX_MUL=2
 
+TARGET = main
+
+COMPILER = g++
 FLAGS = -std=c++0x -O2 -Wall -Wextra -Wpedantic -fopenmp
-#FLAGS = -std=c++11
 
 OS := $(shell uname)
 ifeq ($(OS),Darwin)
@@ -15,19 +20,22 @@ else
 endif
 
 
-default: all
+default: $(TARGET)
 
-all: clean main.o Matrix.o functions.o
-	$(COMPILER) $(FLAGS) main.o Matrix.o functions.o -o main
+$(TARGET): main.o Matrix.o functions.o
+	$(COMPILER) $(FLAGS) main.o Matrix.o functions.o -o $@
 
-main.o: 
-	$(COMPILER) -c $(FLAGS) main.cpp -o main.o
+main.o: main.cpp
+	$(COMPILER) -c $(FLAGS) main.cpp
 
-functions.o: 
-	$(COMPILER) -c $(FLAGS) functions.cpp -o functions.o
+functions.o: functions.cpp
+	$(COMPILER) -c $(FLAGS) functions.cpp
 
-Matrix.o:
-	$(COMPILER) -c $(FLAGS) Matrix.cpp -o Matrix.o
+Matrix.o: Matrix.cpp
+	$(COMPILER) -c $(FLAGS) $(TYPE_MUL) Matrix.cpp
 
 clean:
-	$(RM) *.o all
+	$(RM) *.o
+
+clean_all:
+	$(RM) *.o main
