@@ -46,5 +46,5 @@ if __name__ == "__main__":
     data_2 = pd.read_csv('result_2.csv').groupby(['Threads', 'Dimension'], as_index=False).mean()
     max_time = max(max(data_1['RunTime']), max(data_2['RunTime']))
 
-    buildPlot('mult_1', data_1, max_time)
-    buildPlot('mult_2', data_2, max_time)
+    buildPlot('mult_1', data_1, max_time, 20)
+    buildPlot('mult_2', data_2, max_time, 20)
