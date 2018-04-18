@@ -8,6 +8,41 @@
 #include "functions.h"
 
 
+double f(double x, double y) {
+	return x + y;
+}
+
+double g(double x, double y) {
+	if	(x == 0)
+		return 1 - 2 * y;
+	if	(x == 1)
+		return -1 + 2 * y;
+	if	(y == 0)
+		return 1 - 2 * x;
+	if 	(y == 1)
+		return -1 + 2 * x;
+}
+
+void Init(Matrix& f_mat, Matrix& u_mat) {
+	size_t N = f_mat.rows();
+	double h = 1.0 / (N + 1);
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++)
+			f_mat(i, j) = f((i + 1) * h, (j + 1) * h);
+	}
+
+	for (int i = 1; i < N + 1; i++) {
+		u_mat(i, 0) = g(i * h, 0);
+		u_mat(i, N + 1) = g(i * h, (N + 1) * h);
+	}
+
+	for (int j = 0; j < N + 2; j++) {
+		u_mat(0, j) = g(0, j * h);
+		u_mat(N + 1, j) = g((N + 1) * h, j * h);
+	}
+}
+
 int main(int argc, char* argv[]) {
 
 	auto startTime = std::chrono::steady_clock::now();
@@ -30,7 +65,14 @@ int main(int argc, char* argv[]) {
 
 	auto initTime = std::chrono::steady_clock::now();
 
-	C = A * B;
+
+	Init();
+
+
+
+
+
+
 
 	auto mulTime = std::chrono::steady_clock::now();
 
