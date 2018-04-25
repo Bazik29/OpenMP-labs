@@ -6,10 +6,13 @@
 
 #include "Matrix.h"
 #include "functions.h"
+#include <iomanip>
+#include <cstdlib>
+#include <cmath>
 
 
 double f(double x, double y) {
-	return x + y;
+	return 0;
 }
 
 double g(double x, double y) {
@@ -21,10 +24,12 @@ double g(double x, double y) {
 		return 1 - 2 * x;
 	if 	(y == 1)
 		return -1 + 2 * x;
+	return 0;
 }
 
-void Init(Matrix& f_mat, Matrix& u_mat) {
-	size_t N = f_mat.rows();
+Matrix calcDirichlet(int N=99, double eps=0.0001) {
+	Matrix u_mat(N+2, N+2);
+	Matrix f_mat(N, N);
 	double h = 1.0 / (N + 1);
 
 	for (int i = 0; i < N; i++) {
@@ -41,6 +46,23 @@ void Init(Matrix& f_mat, Matrix& u_mat) {
 		u_mat(0, j) = g(0, j * h);
 		u_mat(N + 1, j) = g((N + 1) * h, j * h);
 	}
+
+	double max;
+	int IterCnt = 0;
+	do {
+		IterCnt++;
+		max = 0;
+		for (int i = 1; i < N + 1; i++)
+			for (int j = 1; j < N + 1; j++) {
+				double u0 = u_mat(i, j);
+				double t = 0.25 * (u_mat(i-1, j) + u_mat(i+1, j) + u_mat(i, j-1) + u_mat(i, j+1) - h*h*f_mat(i - 1, j - 1));
+				u_mat(i, j) = t;
+				double d = std::fabs(t - u0);
+				if (d >	max) max = d;
+			}
+	} while (max > eps);
+	std::cout << "IterCnt = " << IterCnt << std::endl;
+	return u_mat;
 }
 
 int main(int argc, char* argv[]) {
@@ -59,17 +81,18 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	Matrix A = Matrix::rand(rows, cols);
-	Matrix B = Matrix::eye(rows, cols);
-	Matrix C(rows, cols);
+
+	//Matrix A = Matrix::rand(rows, cols);
+	//Matrix B = Matrix::eye(rows, cols);
+	//Matrix C(rows, cols);
 
 	auto initTime = std::chrono::steady_clock::now();
 
 
-	Init();
+	Matrix A = calcDirichlet();
 
 
-
+	//std::cout << toString(A);
 
 
 
