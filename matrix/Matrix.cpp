@@ -98,7 +98,8 @@ std::string toString(const Matrix& matrix) {
 	std::stringstream ss;
 	for (size_t i = 0; i < matrix.rows(); ++i) {
 		for (size_t j = 0; j < matrix.cols(); ++j) {
-			ss << matrix(i, j) << " ";
+			ss << matrix(i, j);
+			if (j != matrix.cols()-1 ) ss << " ";
 		}
 		ss << std::endl;
 	}

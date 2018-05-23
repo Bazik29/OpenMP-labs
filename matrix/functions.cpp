@@ -1,7 +1,11 @@
 #include "functions.h"
 
 #include <iostream>
+#include <cmath>
 
+using std::fabs;
+using std::cout;
+using std::endl;
 
 void benchmarkPrint(size_t dim, double initDuration, double mulDuration, double runtimeDuration) {
 	std::cout.setf(std::ios::fixed);
@@ -10,5 +14,5 @@ void benchmarkPrint(size_t dim, double initDuration, double mulDuration, double 
 }
 
 void printCSV(int threads, size_t dim, double initDuration, double mulDuration, double runtimeDuration) {
-	std::cout << threads << "," << dim << "," << initDuration << "," << mulDuration << "," << runtimeDuration << std::endl;
+	cout << threads << "," << dim << "," << initDuration << "," << mulDuration << "," << runtimeDuration << endl;
 }
