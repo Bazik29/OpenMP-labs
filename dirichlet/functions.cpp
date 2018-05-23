@@ -125,4 +125,5 @@ DirichletResult solveDirichlet(size_t N,  double eps) {
 	auto runtimeDuration = std::chrono::duration_cast<std::chrono::duration<double>>(runtime - startTime);
 
 	DirichletResult result(omp_get_max_threads(), u_mat, iterations, runtimeDuration.count());
+	return result;
 }
