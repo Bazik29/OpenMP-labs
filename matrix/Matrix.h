@@ -25,6 +25,8 @@ public:
 
 	Matrix operator*(const Matrix& matrix);
 
+	std::string toString();
+
 	static Matrix rand(size_t rows, size_t cols) { return Matrix(rows, cols, randVector(rows * cols)); }
 	static Matrix eye(size_t rows, size_t cols) { return Matrix(rows, cols, eyeMatrix(rows, cols)); }
 

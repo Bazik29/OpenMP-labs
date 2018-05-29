@@ -13,16 +13,22 @@ struct DirichletResult {
 	Matrix surface;
 	size_t iterations;
 	double runtime;
+	double eps;
 
 
-	DirichletResult(int n, Matrix s, size_t i, double r) : num_threads(n), surface(s), iterations(i), runtime(r) 
+	DirichletResult(int n, Matrix s, size_t i, double r, double e) : 
+		num_threads(n), surface(s), iterations(i), runtime(r), eps(e)
 	{}
 
-	std::string toStr() {
+	std::string toString() {
 		std::stringstream ss;
+		ss << surface.toString() << std::endl;
+		return ss.str();
+	}
 
-		ss << toString(surface);
-		ss << num_threads << "," << iterations << runtime << std::endl;
+	std::string benchmark() {
+		std::stringstream ss;
+		ss << num_threads << "," << iterations << "," << runtime << "," << surface.cols() << "," << eps << std::endl;
 		return ss.str();
 	}
 };

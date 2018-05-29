@@ -87,36 +87,35 @@ DirichletResult solveDirichlet(size_t N,  double eps) {
 	}
 
 	double max, u0, d;
-	size_t j, iterations = 0;
-	std::vector<double> mx(N);
+	size_t i = 0, j = 0, iterations = 0;
+	std::vector<double> mx(N+1);
 	do
 	{
 		iterations++;
 		// нарастание волны (k - длина фронта волны)
 		for (size_t k = 1; k < N+1; k++) {
 			mx[k] = 0;
-			#pragma omp parallel for shared(u_mat, N, max) private(j, u0, d) schedule(static, 1)
-			for (size_t i = 1; i < k+1; i++) {
+			#pragma omp parallel for shared(u_mat, k, max) private(i, j, u0, d) 
+			for (i = 1; i < k+1; i++) {
 				j = k + 1 - i;
 				u0 = u_mat(i, j);
-				u_mat(i, j) = 0.25 * (u_mat(i-1, j) +u_mat(i+1, j) + u_mat(i, j-1) + u_mat(i, j+1) - h*h*f_mat(i-1, j-1));
-				d = fabs(u_mat(i, j) - u0);
+				u_mat(i, j) = 0.25 * (u_mat(i-1, j) + u_mat(i+1, j) + u_mat(i, j-1) + u_mat(i, j+1) - h*h*f_mat(i-1, j-1));
+				d = std::fabs(u_mat(i, j) - u0);
 				if (d > mx[i]) mx[i] = d;
 			}
 		}
 		for (size_t k = N-1; k > 0; k--) {
-			#pragma omp parallel for shared(u_mat, N, max) private(j, u0, d) schedule(static, 1)
-			for (size_t i = N-k+1; i < N+1; i++){
+			#pragma omp parallel for shared(u_mat, N, mx) private(i, j, u0, d)
+			for (i = N-k+1; i < N+1; i++){
 				j = 2*N - k - i + 1;
 				u0 = u_mat(i, j);
-				u_mat(i, j) = 0.25 * (u_mat(i-1, j) +u_mat(i+1, j) + u_mat(i, j-1) + u_mat(i, j+1) - h*h*f_mat(i-1, j-1));
+				u_mat(i, j) = 0.25 * (u_mat(i-1, j) + u_mat(i+1, j) + u_mat(i, j-1) + u_mat(i, j+1) - h*h*f_mat(i-1, j-1));
 				d = std::fabs(u_mat(i, j) - u0);
 				if (d > mx[i]) mx[i] = d;				
 			}
 		}
-
 		max = 0;
-		for (size_t i = 1; i < N+1; i++) {
+		for (i = 1; i < N+1; i++) {
 			if (mx[i] > max) max = mx[i];
 		}
 	} while (max > eps);
@@ -124,6 +123,5 @@ DirichletResult solveDirichlet(size_t N,  double eps) {
 	auto runtime = std::chrono::steady_clock::now();
 	auto runtimeDuration = std::chrono::duration_cast<std::chrono::duration<double>>(runtime - startTime);
 
-	DirichletResult result(omp_get_max_threads(), u_mat, iterations, runtimeDuration.count());
-	return result;
+	return DirichletResult(omp_get_max_threads(), u_mat, iterations, runtimeDuration.count(), eps);
 }

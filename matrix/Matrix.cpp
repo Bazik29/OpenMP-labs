@@ -94,6 +94,18 @@ Matrix transpose(const Matrix& matrix) {
   	return result;
 }
 
+std::string Matrix::toString() {
+	std::stringstream ss;
+	for (size_t i = 0; i < (*this).rows(); ++i) {
+		for (size_t j = 0; j < (*this).cols(); ++j) {
+			ss << (*this)(i, j);
+			if (j != (*this).cols()-1 ) ss << " ";
+		}
+		ss << std::endl;
+	}
+	return ss.str();
+}
+
 std::string toString(const Matrix& matrix) {
 	std::stringstream ss;
 	for (size_t i = 0; i < matrix.rows(); ++i) {
