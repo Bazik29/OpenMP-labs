@@ -1,7 +1,7 @@
 main
 main_?
-.txt
-.pdf
+*.txt
+*.pdf
 .directory
 .ipynb_checkpoints
 
