@@ -27,7 +27,7 @@ void printCSV_dir(int threads, size_t dim, double eps, size_t IterCnt, double ru
 }
 
 Matrix solveDirichletSerial(size_t N, double eps) {
-	Matrix u_mat(N+2, N+2);
+	Matrix u_mat(N + 2, N + 2);
 	Matrix f_mat(N, N);
 	double h = 1.0 / (N + 1);
 
@@ -54,19 +54,18 @@ Matrix solveDirichletSerial(size_t N, double eps) {
 		for (size_t i = 1; i < N + 1; i++)
 			for (size_t j = 1; j < N + 1; j++) {
 				double u0 = u_mat(i, j);
-				u_mat(i, j) = 0.25 * (u_mat(i-1, j) + u_mat(i+1, j) + u_mat(i, j-1) + u_mat(i, j+1) - h*h*f_mat(i - 1, j - 1));
+				u_mat(i, j) = 0.25 * (u_mat(i - 1, j) + u_mat(i + 1, j) + u_mat(i, j - 1) + u_mat(i, j + 1) - h * h * f_mat(i - 1, j - 1));
 				double d = fabs(u_mat(i, j) - u0);
 				if (d >	max) max = d;
 			}
 	} while (max > eps);
-	//cout << "IterCnt = " << IterCnt << endl;
 	return u_mat;
 }
 
-DirichletResult solveDirichlet(size_t N,  double eps) {
+DirichletResult solveDirichlet_wave(size_t N,  double eps) {
 	auto startTime = std::chrono::steady_clock::now();
-	
-	Matrix u_mat(N+2,  N+2);
+
+	Matrix u_mat(N + 2,  N + 2);
 	Matrix f_mat(N,  N);
 
 	double h = 1.0 / (N + 1);
@@ -88,34 +87,36 @@ DirichletResult solveDirichlet(size_t N,  double eps) {
 
 	double max, u0, d;
 	size_t i = 0, j = 0, iterations = 0;
-	std::vector<double> mx(N+1);
+	std::vector<double> mx(N + 1);
 	do
 	{
 		iterations++;
 		// нарастание волны (k - длина фронта волны)
-		for (size_t k = 1; k < N+1; k++) {
+		for (size_t k = 1; k < N + 1; k++) {
 			mx[k] = 0;
-			#pragma omp parallel for shared(u_mat, k, max) private(i, j, u0, d) 
-			for (i = 1; i < k+1; i++) {
+			#pragma omp parallel for shared(u_mat, k, N, mx) private(i, j, u0, d)
+			for (i = 1; i < k + 1; i++) {
 				j = k + 1 - i;
 				u0 = u_mat(i, j);
-				u_mat(i, j) = 0.25 * (u_mat(i-1, j) + u_mat(i+1, j) + u_mat(i, j-1) + u_mat(i, j+1) - h*h*f_mat(i-1, j-1));
+				u_mat(i, j) = 0.25 * (u_mat(i - 1, j) + u_mat(i + 1, j) + u_mat(i, j - 1) + u_mat(i, j + 1) - h * h * f_mat(i - 1, j - 1));
 				d = std::fabs(u_mat(i, j) - u0);
-				if (d > mx[i]) mx[i] = d;
+				if (d > mx[i])
+					mx[i] = d;
 			}
 		}
-		for (size_t k = N-1; k > 0; k--) {
-			#pragma omp parallel for shared(u_mat, N, mx) private(i, j, u0, d)
-			for (i = N-k+1; i < N+1; i++){
-				j = 2*N - k - i + 1;
+		for (size_t k = N - 1; k > 0; k--) {
+			#pragma omp parallel for shared(u_mat, k, N, mx) private(i, j, u0, d)
+			for (i = N - k + 1; i < N + 1; i++) {
+				j = 2 * N - k - i + 1;
 				u0 = u_mat(i, j);
-				u_mat(i, j) = 0.25 * (u_mat(i-1, j) + u_mat(i+1, j) + u_mat(i, j-1) + u_mat(i, j+1) - h*h*f_mat(i-1, j-1));
+				u_mat(i, j) = 0.25 * (u_mat(i - 1, j) + u_mat(i + 1, j) + u_mat(i, j - 1) + u_mat(i, j + 1) - h * h * f_mat(i - 1, j - 1));
 				d = std::fabs(u_mat(i, j) - u0);
-				if (d > mx[i]) mx[i] = d;				
+				if (d > mx[i])
+					mx[i] = d;
 			}
 		}
 		max = 0;
-		for (i = 1; i < N+1; i++) {
+		for (i = 1; i < N + 1; i++) {
 			if (mx[i] > max) max = mx[i];
 		}
 	} while (max > eps);

@@ -17,10 +17,10 @@ do
 		do
 			if [[ $toFile == 0 ]]
 			then
-				 ./../main -n $dim -e 0.001 -o "matrix_$dim.txt" >> result.csv
+				 ./../main -a 1 -n $dim -e 0.001 -o "matrix_$dim.txt" >> result.csv
 				toFile=1
 			else
-				./../main -n $dim -e 0.001 >> result.csv
+				./../main -a 1 -n $dim -e 0.001 >> result.csv
 			fi
 		done
 	done

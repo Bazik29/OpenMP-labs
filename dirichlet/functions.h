@@ -19,6 +19,10 @@ struct DirichletResult {
 	DirichletResult(int n, Matrix s, size_t i, double r, double e) : 
 		num_threads(n), surface(s), iterations(i), runtime(r), eps(e)
 	{}
+	
+	DirichletResult(const DirichletResult &res) : 
+		num_threads(res.num_threads), surface(res.surface), iterations(res.iterations), runtime(res.runtime), eps(res.eps)
+	{}
 
 	std::string toString() {
 		std::stringstream ss;
@@ -33,7 +37,7 @@ struct DirichletResult {
 	}
 };
 
-Matrix solveDirichletSerial(size_t N=99, double eps=0.0001);
-DirichletResult solveDirichlet(size_t N=99, double eps=0.0001);
+Matrix solveDirichletSerial(size_t N=98, double eps=0.0001);
+DirichletResult solveDirichlet_wave(size_t N=98, double eps=0.0001);
 
 #endif // __FUNCTIONS_H__

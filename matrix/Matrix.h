@@ -14,6 +14,11 @@ public:
 		, m_cols(cols)
 		, m_data(rows * cols)
 	{}
+	Matrix(const Matrix &first)
+        : m_rows(first.m_rows)
+        , m_cols(first.m_cols)
+        , m_data(std::move(first.m_data))
+    {}
 
 	inline size_t rows() const { return m_rows; }
 
