@@ -5,7 +5,8 @@ toFile=1
 
 dims=(100 200 300)
 
-echo "NumThreads,Iterations,Runtime,Dim,Eps" > result.csv
+
+echo "NumThreads,Iterations,Runtime,Dim,Eps" > benchmark.csv
 
 for ((omp_threads=1; omp_threads <= $max_threds; omp_threads+=step_treads)) 
 do
@@ -17,10 +18,10 @@ do
 		do
 			if [[ $toFile == 0 ]]
 			then
-				 ./../main -a 1 -n $dim -e 0.001 -o "matrix_$dim.txt" >> result.csv
+				 ./../main -a 1 -n $dim -e 0.001 -o "matrix_$dim.txt" >> benchmark.csv
 				toFile=1
 			else
-				./../main -a 1 -n $dim -e 0.001 >> result.csv
+				./../main -a 1 -n $dim -e 0.001 >> benchmark.csv
 			fi
 		done
 	done
